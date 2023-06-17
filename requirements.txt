@@ -1,3 +1,5 @@
 jupyter
 python-sat[aiger,approxmc,pblib]
 sympy
+matplotlib
+numpy

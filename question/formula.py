@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 from sympy import Symbol
-from sympy.logic.boolalg import Boolean
+from sympy.logic import And, Not, Or
+from sympy.logic.boolalg import Boolean, is_dnf
 
 
 @dataclass
@@ -23,3 +24,25 @@ class QuestionInput():
         expresión.
         '''
         return bool(self.formula.subs(case))
+
+    @staticmethod
+    def from_clauses(clauses: List[List[int]]):
+        qi = QuestionInput(
+            # Ahora las cláusulas se unen por disyunción
+            Or(
+                *[
+                    # Cada cláusula es una conjunción
+                    And(
+                        *[
+                            # Se interpreta el valor entero almacenado para saber que
+                            # variable(x_i) es y si está negada
+                            Symbol(f'x{v}') if v > 0 else Not(Symbol(f'x{-v}')) for v in clause
+                        ]
+                    ) for clause in clauses
+                ]
+            )
+        )
+        assert is_dnf(
+            qi.formula), f'sympy says that {qi.formula} is not DNF. Is he right?'
+        qi.dnf_formula = clauses
+        return qi

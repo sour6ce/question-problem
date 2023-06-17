@@ -22,7 +22,7 @@ def from_sat_input(formula: List[List[int]] | CNF):
                     *[
                         # Se interpreta el valor entero almacenado para saber que
                         # variable(x_i) es y si está negada
-                        Symbol(f'x{v}') if v > 0 else Not(Symbol(f'x{-v}')) for v in clause
+                        Not(Symbol(f'x{v}')) if v > 0 else Symbol(f'x{-v}') for v in clause
                     ]
                 ) for clause in formula
             ]
